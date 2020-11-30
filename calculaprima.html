@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="description" content="Seguroedificio"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/> 
+		
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">  
+        
+        <link rel="stylesheet" href="css/main.css"/>
+        <link rel="stylesheet" href="css/calculaprima.css"/>
+        
+		<title>SeguroEdificio | Calcula tu prima</title>
+	</head>
+
+	<body ng-app="app">
+		<header>
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button id="navbar-button" style="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                       <a class="navbar-brand" href="index.html">
+                           <img src="images/seguroedificio.png"/>
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="text-center">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li class="active text-center">
+                                <a href="calculaprima.html">Calcula tu prima</a>
+                            </li>
+                            <li class="text-center">
+                                <a href="quienessomos.html">Quienes somos</a>
+                            </li>
+                            <li class="text-center">
+                                <a href="contacto.html">Contacto</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+		</header>
+		<main>
+			<div class="container-fluid">
+                <div id="primeContent">
+				    <div class="prime text-center">
+                        <div class="prime-input">
+                            <h2>Ingrese el monto que desea asegurar</h2>
+                            <br/>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6 col-md-offset-3">
+                                        <input id="primeAmount" type="text" class="form-control input-lg" placeholder="Monto en UF"/>
+                                    </div>    
+                                </div>    
+                            </div>
+                            <button id="calculatePrime" class="btn btn-default">Calcular</button>
+                        </div>
+                    </div>
+                    
+                    <div class="prime-compute text-center">
+                        <h3>Valor estimado prima anual - rango -</h3>
+                        <h2 class="prime-compute-range"><span id="leftRange">a</span> - <span id="rightRange">b</span> UF</h2>
+                        
+                        <div class="prime-next row">
+                            <div class="col-md-12">
+                                <h4 class="prime-next-title">Si deseas continuar con la simulación por favor presiona adelante</h4> 
+                                <a id="goToInsurance" href="javascript:void(0)">
+                                    <img src="images/forwards.png"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="insuranceContent" class="insurance" ng-controller="FormCtrl">
+                        <div class="insurance-form">
+                            <form name="primeForm" action="noaction.html" novalidate>
+                                <h3>Datos del edificio para la simulación del seguro</h3>
+                                <div class="row">
+                                    <!-- Datos & Monto -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="amount">Monto asegurable</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="amount" name="amount" ng-model="amount" readonly/>
+                                                <div class="input-group-addon">UF</div>
+                                            </div>
+                                            <div ng-show="primeForm.amount.$touched && primeForm.amount.$error" ng-class="{'has-error':primeForm.amount.$touched && primeForm.amount.$invalid}">
+                                                <div ng-show="primeForm.amount.$error.required">Se requiere este campo</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="name">Nombre de comunidad del edificio</label>
+                                            <input type="text" class="form-control" id="name" name="name" ng-model="name" required/>
+                                            <div ng-show="primeForm.name.$touched && primeForm.name.$error" ng-class="{'has-error':primeForm.name.$touched && primeForm.name.$invalid}">
+                                                <div ng-show="primeForm.name.$error.required">Se requiere este campo</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="rut">Rut de comunidad del edificio (Sin puntos y con guión)</label>
+                                            <input type="text" class="form-control" id="rut" name="rut" ng-model="rut" placeholder="12345678-9" ng-pattern="/[0-9]{1,8}-[0-9kK]/" required/>
+                                            <div ng-show="primeForm.rut.$touched && primeForm.rut.$error" ng-class="{'has-error':primeForm.rut.$touched && primeForm.rut.$invalid}">
+                                                <div ng-show="primeForm.rut.$error.required">Se requiere este campo</div>
+                                                <div ng-show="primeForm.rut.$error.pattern">El rut ingresado no es válido</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="location">Ubicación del edificio</label>
+                                            <input type="text" class="form-control" id="location" name="location" ng-model="location" required/>
+                                            <div ng-show="primeForm.location.$touched && primeForm.location.$error" ng-class="{'has-error':primeForm.location.$touched && primeForm.location.$invalid}">
+                                                <div ng-show="primeForm.location.$error.required">Se requiere este campo</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="year">Año de construcción</label>
+                                            <input type="text" class="form-control" id="year" name="year" ng-model="year" required/>
+                                            <div ng-show="primeForm.year.$touched && primeForm.year.$error" ng-class="{'has-error':primeForm.year.$touched && primeForm.year.$invalid}">
+                                                <div ng-show="primeForm.year.$error.required">Se requiere este campo</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="floorsNumber">Número de pisos del edificio</label>
+                                            <input type="number" class="form-control" id="floorsNumber" name="floorsNumber" ng-model="floorsNumber" required/>
+                                            <div ng-show="primeForm.floorsNumber.$touched && primeForm.floorsNumber.$error" ng-class="{'has-error':primeForm.floorsNumber.$touched && primeForm.floorsNumber.$invalid}">
+                                                <div ng-show="primeForm.floorsNumber.$error.required">Se requiere este campo</div>
+                                            </div>
+                                        </div>
+                                   </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="contactPhone">Teléfono de contacto</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">+</span>
+                                                <input type="text" class="form-control" id="contactPhone" name="contactPhone" placeholder="56 XXX XXX XXX" ng-pattern="/56[0-9]{9}/" ng-model="contactPhone" required/>
+                                            </div>
+                                            <div ng-show="primeForm.contactPhone.$touched && primeForm.contactPhone.$error" ng-class="{'has-error':primeForm.contactPhone.$touched && primeForm.contactPhone.$invalid}">
+                                                <div ng-show="primeForm.contactPhone.$error.required">Se requiere este campo</div>
+                                                <div ng-show="primeForm.contactPhone.$error.pattern">El número ingresado no es válido</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Correo de contacto</label>
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@mail.com" ng-model="email" required/>
+                                            <div ng-show="primeForm.email.$touched && primeForm.email.$error" ng-class="{'has-error':primeForm.email.$touched && primeForm.email.$invalid}">
+                                                <div ng-show="primeForm.email.$error.required">Se requiere este campo</div>
+                                                <div ng-show="primeForm.email.$error.email">Se debe ingresar un correo válido</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 text-center">
+                                        <button id="formButton" type="submit" class="btn" ng-disabled="primeForm.$invalid">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="prime-disclaimer text-center">
+                        <p>*Valor prima es meramente referencial e incluye cobertura de incendios y terremotos, entre otros. Los términos y condiciones definitivos se detallarán mediante una cotización formal por parte de una compañía de seguros.</p>
+                    </div>
+                </div>    
+			</div>
+            
+            <div id="primeToInsuranceError" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Error: No se ha ingresado un monto a asegurar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Antes de poder ingresar los datos para la cotización, se debe ingresar primero el monto en UF que se dese asegurar.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+		</main>
+		<footer>
+			<div class="container-fluid text-center">
+                <p>Todos los derechos reservados. Santiago de Chile, 2017.</p>
+		    </div>
+		</footer>
+        
+        <a class="link-upicon" href="javascript:void(0)">
+            <div class="upicon text-center">
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-angle-double-up fa-stack-1x"></i>
+                </span>
+            </div>
+        </a>
+        
+        <div id="notANumberModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">No se ha calculado el rango</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>El valor ingresado es inválido.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+               </div>
+            </div>
+        </div>
+        
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-messages.js"></script>
+        
+        <script src="scripts/navigation.js"></script>
+        <script src="scripts/primeCalculation.js"></script>
+        
+        <script src="scripts/primeApp.js"></script>
+	</body>
+</html>
